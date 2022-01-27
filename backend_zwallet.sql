@@ -1,8 +1,8 @@
 -- create database
-CREATE DATABASE zwallet_backend;
+CREATE DATABASE backend_zwallet;
 
 -- create table users
-CREATE TABLE users (id int NOT NULL, username VARCHAR(64), email VARCHAR(64), password VARCHAR(100), pincode VARCHAR(8), phone VARCHAR(16), picture VARCHAR(500), PRIMARY KEY (id));
+CREATE TABLE users (id int NOT NULL, username VARCHAR(64), email VARCHAR(64), password VARCHAR(100), pincode VARCHAR(8), phone VARCHAR(16), picture VARCHAR(500) NOT NULL DEFAULT 'image.jpg', PRIMARY KEY (id));
 
 -- create table wallets
 CREATE TABLE wallets (id VARCHAR(12) NOT NULL, id_user INT NOT NULL, balance INT NOT NULL DEFAULT 0, PRIMARY KEY (id), KEY fk_wallets (id_user), CONSTRAINT fk_wallets FOREIGN KEY (id_user) REFERENCES users (id) ON DELETE CASCADE);
