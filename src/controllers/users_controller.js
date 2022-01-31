@@ -3,7 +3,8 @@ const handleResponse = require('../helpers/common');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 // import modules from models
-const usersModel = require('../models/users_model')
+const usersModel = require('../models/users_model');
+const walletsModel = require('../models/wallets_model');
 
 // create controller for register user
 const addUser = async (req, res, next) => {
@@ -29,8 +30,10 @@ const addUser = async (req, res, next) => {
                 phone: phone
             };
             await usersModel.addUser(dataUSer);
+            await walletsModel.addWallet(randomIdWallet, dataUSer.id);
             const resultUser = {
-                id: dataUSer.id,
+                id_user: dataUSer.id,
+                id_wallet: randomIdWallet,
                 username: dataUSer.username,
                 email: dataUSer.email
             }
@@ -46,7 +49,7 @@ const loginUser = async (req, res, next) => {
     try {
         const {email, password} = req.body;
         const [userRegistered] = await usersModel.findUser('email', email);
-        console.log( userRegistered)
+        console.log('dari userregistered', userRegistered)
         if (!userRegistered) {
             return next(createError (403, 'Email/Password Wrong'))
         } else {
