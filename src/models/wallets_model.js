@@ -14,8 +14,21 @@ const addWallet = (randomIdWallet, idUser) => {
         })
     })
 }
-
+// create models for see wallet for detail user
+const seeWallet = (idUser) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT * FROM wallets WHERE id_user = ${idUser}`, (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(error);
+                reject(error);
+            }
+        })
+    })
+}
 // export modules to controllers
 module.exports = {
-    addWallet
+    addWallet,
+    seeWallet
 }

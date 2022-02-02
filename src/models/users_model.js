@@ -27,9 +27,52 @@ const findUser = (field, record) => {
         });
     });
 };
+// create model for see detail user
+const detailUser = (idUser) => {
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT id, username, email, phone, picture FROM users WHERE id = ${idUser}`, (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(error);
+                reject(error);
+            }
+        })
+    })
+}
 
+// create model for get all user
+const getAllUser = () => {
+    return new Promise((resolve, reject) => {
+        connection.query(`SELECT id, username, email, picture, phone FROM users;`, (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(error);
+                reject(error);
+            }
+        })
+    })
+}
+
+// create model for edit user
+const editUser = (dataUser, idUser) => {
+    return new Promise((resolve, reject) => {
+        connection.query('UPDATE users SET ? WHERE id = ?', [dataUser, idUser], (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(error);
+                reject(error);
+            }
+        })
+    })
+}
 // export modules to controllers
 module.exports = {
     addUser,
-    findUser
+    findUser,
+    detailUser,
+    getAllUser,
+    editUser
 }

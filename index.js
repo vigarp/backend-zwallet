@@ -2,7 +2,7 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 4001;
 const cors = require('cors');
 const app = express();
 
@@ -15,7 +15,8 @@ const usersController = require('./src/controllers/users_controller');
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
-// app.use('/users', userRoutes);
+
+app.use('/users', userRoutes)
 app.post('/register', usersController.addUser);
 app.post('/login', usersController.loginUser);
 
