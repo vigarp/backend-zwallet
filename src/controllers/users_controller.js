@@ -6,7 +6,6 @@ const jwt = require('jsonwebtoken');
 // import modules from models
 const usersModel = require('../models/users_model');
 const walletsModel = require('../models/wallets_model');
-const { handle } = require('express/lib/router');
 
 // create controller for register user
 const addUser = async (req, res, next) => {

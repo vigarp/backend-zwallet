@@ -27,8 +27,23 @@ const seeWallet = (idUser) => {
         })
     })
 }
+
+// create models for top-up wallet user
+const topUpWallet = (idUser, amount) => {
+    return new Promise((resolve, reject) => {
+        connection.query('UPDATE wallets SET balance = balance + ? WHERE id_user = ?', [amount, idUser], (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(errror);
+                reject(error)
+            }
+        })
+    })
+}
 // export modules to controllers
 module.exports = {
     addWallet,
-    seeWallet
+    seeWallet,
+    topUpWallet
 }
