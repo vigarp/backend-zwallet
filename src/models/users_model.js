@@ -68,11 +68,26 @@ const editUser = (dataUser, idUser) => {
         })
     })
 }
+
+//create model for delete user
+const deleteUser = (idUser) => {
+    return new Promise((resolve, reject) => {
+        connection.query('DELETE FROM users WHERE id = ?', idUser, (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(error);
+                reject(error);
+            }
+        })
+    })
+}
 // export modules to controllers
 module.exports = {
     addUser,
     findUser,
     detailUser,
     getAllUser,
-    editUser
+    editUser,
+    deleteUser
 }

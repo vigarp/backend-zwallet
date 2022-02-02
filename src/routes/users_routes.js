@@ -11,6 +11,7 @@ route
     .get('/:id', userController.detailUser)
     .get('/', userController.getAllUser)
     .put('/:id', userController.editUser)
+    .delete('/:id', userController.deleteUser)
 
 
 

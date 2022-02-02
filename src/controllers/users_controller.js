@@ -2,6 +2,7 @@ const createError = require('http-errors');
 const handleResponse = require('../helpers/common');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+
 // import modules from models
 const usersModel = require('../models/users_model');
 const walletsModel = require('../models/wallets_model');
@@ -16,11 +17,11 @@ const addUser = async (req, res, next) => {
         const emailRegistered = await usersModel.findUser('email', email);
         const phoneRegistered = await usersModel.findUser('phone', phone);
         if (username === undefined || email === undefined || password === undefined || phone === undefined || username === '' || email === '' || password === '') {
-            return next(createError(403, 'Registration Failed, please check the input'));
+            return next(createError(403, 'registration failed, please check the input'));
         } else if (emailRegistered.length > 0) {
-            return next(createError(403, 'Email Already Registered'));
+            return next(createError(403, 'email already registered'));
         } else if (phoneRegistered.length > 0) {
-            return next(createError(403, 'Phone Already Registered'));
+            return next(createError(403, 'phone already registered'));
         } else {
             const passwordHash = await bcrypt.hash(password, 10);
             const dataUSer = {
@@ -38,10 +39,10 @@ const addUser = async (req, res, next) => {
                 username: dataUSer.username,
                 email: dataUSer.email
             }
-            handleResponse.response(res, resultUser, 201, 'User Successfully Registered');
+            handleResponse.response(res, resultUser, 201, 'user successfully registered');
         }
     } catch (error) {
-        console.log("dari controller =>", error)
+        console.log(error)
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -50,12 +51,11 @@ const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const [userRegistered] = await usersModel.findUser('email', email);
-        console.log('dari userregistered', userRegistered)
         if (!userRegistered) {
-            return next(createError(403, 'Email/Password Wrong'))
+            return next(createError(403, 'email/password wrong'))
         } else {
             const resultHash = await bcrypt.compare(password, userRegistered.password)
-            if (!resultHash) return next(createError(403, 'Email/Password Wrong'));
+            if (!resultHash) return next(createError(403, 'email/password wrong'));
             const secretKey = process.env.SECRET_KEY_JWT;
             const payload = {
                 email: userRegistered.email,
@@ -75,7 +75,7 @@ const loginUser = async (req, res, next) => {
                 picture,
                 token: token
             };
-            handleResponse.response(res, result, 200, 'Successfully Login');
+            handleResponse.response(res, result, 200, 'successfully login');
         }
     } catch (error) {
         console.log(error);
@@ -89,17 +89,18 @@ const detailUser = async (req, res, next) => {
         const idUser = req.params.id;
         const [resultUser] = await usersModel.detailUser(idUser);
         const [resultWallet] = await walletsModel.seeWallet(idUser);
-        resultUser.id_wallet = resultWallet.id
-        resultUser.balance = resultWallet.balance
         if (resultUser === undefined) {
             res.json({
-                message: 'Data not found'
+                message: `User not registered with id: ${idUser}`
             });
         } else {
-            handleResponse.response(res, resultUser, 200, 'Successfully Fetched');
+            resultUser.id_wallet = resultWallet.id
+            resultUser.balance = resultWallet.balance
+            handleResponse.response(res, resultUser, 200, 'successfully fetched from server');
         }
     } catch (error) {
-
+        console.log(error);
+        next(createError(500, new createError.InternalServerError()));
     }
 }
 
@@ -107,7 +108,7 @@ const detailUser = async (req, res, next) => {
 const getAllUser = async (req, res, next) => {
     try {
         const resultUsers = await usersModel.getAllUser();
-        handleResponse.response(res, resultUsers, 200, 'Succsessfully Fetched');
+        handleResponse.response(res, resultUsers, 200, 'succsessfully fetched from server');
     } catch (error) {
 
     }
@@ -126,9 +127,24 @@ const editUser = async (req, res, next) => {
             picture
         };
         await usersModel.editUser(dataUser, idUser);
-        handleResponse.response(res, dataUser, 200, 'Successfully Edited')
+        handleResponse.response(res, dataUser, 200, 'successfully edited')
     } catch (error) {
         next(createError(500, new createError.InternalServerError()));
+    }
+}
+//create controller for delete user
+const deleteUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        const resultUser = await usersModel.findUser('id', idUser);
+        if (resultUser.length === 0) {
+            return next(createError(403, `ID ${idUser} not found`));
+        } else {
+            await usersModel.deleteUser(idUser);
+            handleResponse.response(res, true, 200, `successfully deleted id: ${idUser}`)
+        }
+    } catch (error) {
+        nect(createError(500, new createError.InternalServerError()));
     }
 }
 // export modules to routes
@@ -137,5 +153,6 @@ module.exports = {
     loginUser,
     detailUser,
     getAllUser,
-    editUser
+    editUser,
+    deleteUser
 }
