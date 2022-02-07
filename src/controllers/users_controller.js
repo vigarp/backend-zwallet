@@ -137,7 +137,7 @@ const deleteUser = async (req, res, next) => {
         const idUser = req.params.id;
         const resultUser = await usersModel.findUser('id', idUser);
         if (resultUser.length === 0) {
-            return next(createError(403, `ID ${idUser} not found`));
+            return next(createError(403, `id ${idUser} not found`));
         } else {
             await usersModel.deleteUser(idUser);
             handleResponse.response(res, true, 200, `successfully deleted id: ${idUser}`)
