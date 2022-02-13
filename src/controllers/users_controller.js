@@ -50,7 +50,9 @@ const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const [userRegistered] = await usersModel.findUser('email', email);
-        if (!userRegistered) {
+        if (email === undefined || password === undefined || email === '' || password === '' ) {
+            return next(createError(403, 'login failed, please check the input'));
+        } else if (!userRegistered) {
             return next(createError(403, 'email/password wrong'))
         } else {
             const resultHash = await bcrypt.compare(password, userRegistered.password)
@@ -89,9 +91,7 @@ const detailUser = async (req, res, next) => {
         const [resultUser] = await usersModel.detailUser(idUser);
         const [resultWallet] = await walletsModel.seeWallet(idUser);
         if (resultUser === undefined) {
-            res.json({
-                message: `User not registered with id: ${idUser}`
-            });
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
         } else {
             resultUser.id_wallet = resultWallet.id
             resultUser.balance = resultWallet.balance
@@ -107,7 +107,7 @@ const detailUser = async (req, res, next) => {
 const getAllUser = async (req, res, next) => {
     try {
         const resultUsers = await usersModel.getAllUser();
-        handleResponse.response(res, resultUsers, 200, 'succsessfully fetched from server');
+        handleResponse.response(res, resultUsers, 200, 'successfully fetched from server');
     } catch (error) {
 
     }
