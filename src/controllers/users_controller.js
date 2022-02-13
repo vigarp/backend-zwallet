@@ -121,6 +121,8 @@ const editUser = async (req, res, next) => {
         const [userRegistered] = await usersModel.findUser('id', idUser);
         if (userRegistered === undefined) {
             handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else if (username === undefined || email === undefined || password === undefined || phone === undefined || picture === undefined || username === '' || email === '' || password === '' || phone === '' || picture === '') {
+            return next(createError(403, 'edit failed, please check the input'));   
         } else {
             const dataUser = {
                 username,

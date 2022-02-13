@@ -1,12 +1,15 @@
 let chai = require("chai");
 let chaiHttp = require("chai-http");
 let server = require("../index");
+const usersModel = require("../src/models/users_model");
 
 //Assertion Style
 chai.should();
 
 chai.use(chaiHttp);
-let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlbWJvQG1haWwuaWQiLCJ1c2VybmFtZSI6InJlbWJvIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2NDQ3MzQzNjIsImV4cCI6MTY0NDgyMDc2Mn0.X6JlCIFgHhzaUZmjq65gIp-_WKsT7tlod6blTZQ8rzc';
+let tokenAdmin = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImlzbWFpbEBtYWlsLmlkIiwidXNlcm5hbWUiOiJpc21haWwiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE2NDQ3NTk2MDEsImV4cCI6MTY0NDg0NjAwMX0.FpFbV4JQuTTKcnKB3QPpiO-jrdkTa_t1WtoVaTQRNOw';
+
+let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InJlbWJvQG1haWwuaWQiLCJ1c2VybmFtZSI6InJlbWJvIiwicm9sZSI6InVzZXIiLCJpYXQiOjE2NDQ3NjAyMzgsImV4cCI6MTY0NDg0NjYzOH0.YCdOu9SALvMuKASKyezD6RAJy65_4v9EZSgZSLdKIww'
 
 describe('Users API', () => {
     
@@ -266,8 +269,71 @@ describe('Users API', () => {
                 done();
                 });
         });
+        const wrongDataUser = {
+            usermane: "intanpayong",
+            emali: "intanpayong@mail.id",
+            password: "intanpayong",
+            phone: "089878964328",
+            picture: "image.jpg"
+        }
+        it("It should NOT PUT a user by wrong input", (done) => {
+            const idUser = 493
+            chai.request(server)
+                .put(`/users/${idUser}`)
+                .set({ Authorization: `Bearer ${token}` })
+                .send(wrongDataUser)
+                .end((err, response) => {
+                    response.should.have.status(403);
+                    response.body.status.should.be.eq('Failed');
+                    response.body.should.have.property('data').eq(null)
+                    response.body.message.should.be.eq(`edit failed, please check the input`);
+                done();
+                });
+        });
     });
     /**
      * Test the DELETE route
      */
+    const idUserDeleted = 535
+     describe("DELETE /users/:id", () => {
+        it("It should NOT DELETE a user by wrong role token", (done) => {
+            chai.request(server)
+                .delete(`/users/${idUserDeleted}`)
+                .set({ Authorization: `Bearer ${token}` })
+                .send(dataUser)
+                .end((err, response) => {
+                    response.should.have.status(401);
+                    response.body.status.should.be.eq('Failed');
+                    response.body.should.have.property('data').eq(null);
+                    response.body.message.should.be.eq(`admin only`);
+                done();
+                });
+        });
+        it("It should DELETE a user", (done) => {
+            chai.request(server)
+                .delete(`/users/${idUserDeleted}`)
+                .set({ Authorization: `Bearer ${tokenAdmin}` })
+                .send(dataUser)
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    response.body.status.should.be.eq('Success');
+                    response.body.should.have.property('data').eq(true);
+                    response.body.message.should.be.eq(`successfully deleted id: ${idUserDeleted}`);
+                done();
+                });
+        });
+        it("It should NOT DELETE a user by wrong id", (done) => {
+            chai.request(server)
+                .delete(`/users/${idUserDeleted}`)
+                .set({ Authorization: `Bearer ${tokenAdmin}` })
+                .send(dataUser)
+                .end((err, response) => {
+                    response.should.have.status(403);
+                    response.body.status.should.be.eq('Failed');
+                    response.body.should.have.property('data').eq(null);
+                    response.body.message.should.be.eq(`id ${idUserDeleted} not found`);
+                done();
+                });
+        });
+    });
 });
