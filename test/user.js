@@ -222,7 +222,51 @@ describe('Users API', () => {
     /**
      * Test the PUT route
      */
-
+    const dataUser = {
+        username: "intanpayong",
+        email: "intanpayong@mail.id",
+        password: "intanpayong",
+        phone: "089878964328",
+        picture: "image.jpg"
+    }
+     describe("PUT /users/:id", () => {
+        it("It should PUT a user", (done) => {
+            const idUser = 493
+            chai.request(server)
+                .put(`/users/${idUser}`)
+                .set({ Authorization: `Bearer ${token}` })
+                .send(dataUser)
+                .end((err, response) => {
+                    response.should.have.status(200);
+                    response.body.status.should.be.eq('Success');
+                    response.body.data.should.be.a('object');
+                    response.body.data.should.have.property('username');
+                    response.body.data.should.have.property('username').eq(dataUser.username);
+                    response.body.data.should.have.property('email');
+                    response.body.data.should.have.property('email').eq(dataUser.email);
+                    response.body.data.should.have.property('phone');
+                    response.body.data.should.have.property('phone').eq(dataUser.phone);
+                    response.body.data.should.have.property('picture');
+                    response.body.data.should.have.property('picture').eq(dataUser.picture);
+                    response.body.message.should.be.eq('successfully edited');
+                done();
+                });
+        });
+        it("It should NOT PUT a user by wrong ID", (done) => {
+            const idUser = 100
+            chai.request(server)
+                .put(`/users/${idUser}`)
+                .set({ Authorization: `Bearer ${token}` })
+                .send(dataUser)
+                .end((err, response) => {
+                    response.should.have.status(404);
+                    response.body.status.should.be.eq('Failed');
+                    response.body.should.have.property('data').eq(null)
+                    response.body.message.should.be.eq(`user not registered with id: ${idUser}`);
+                done();
+                });
+        });
+    });
     /**
      * Test the DELETE route
      */

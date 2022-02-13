@@ -118,16 +118,22 @@ const editUser = async (req, res, next) => {
         const idUser = req.params.id;
         const {username, email, password, phone, picture} = req.body;
         const passwordHash = await bcrypt.hash(password, 10);
-        const dataUser = {
-            username,
-            email,
-            password: passwordHash,
-            phone,
-            picture
-        };
-        await usersModel.editUser(dataUser, idUser);
-        handleResponse.response(res, dataUser, 200, 'successfully edited')
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const dataUser = {
+                username,
+                email,
+                password: passwordHash,
+                phone,
+                picture
+            };
+            await usersModel.editUser(dataUser, idUser);
+            handleResponse.response(res, dataUser, 200, 'successfully edited');
+        }
     } catch (error) {
+        console.log(error)
         next(createError(500, new createError.InternalServerError()));
     }
 }
