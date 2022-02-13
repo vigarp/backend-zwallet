@@ -143,7 +143,7 @@ const deleteUser = async (req, res, next) => {
             handleResponse.response(res, true, 200, `successfully deleted id: ${idUser}`)
         }
     } catch (error) {
-        nect(createError(500, new createError.InternalServerError()));
+        next(createError(500, new createError.InternalServerError()));
     }
 }
 // export modules to routes
