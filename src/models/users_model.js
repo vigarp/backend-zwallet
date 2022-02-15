@@ -30,7 +30,7 @@ const findUser = (field, record) => {
 // create model for see detail user
 const detailUser = (idUser) => {
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT id, username, email, phone, picture FROM users WHERE id = ${idUser}`, (error, result) => {
+        connection.query(`SELECT id, username, role, email, phone, picture, verified FROM users WHERE id = ${idUser}`, (error, result) => {
             if (!error) {
                 resolve(result);
             } else {
