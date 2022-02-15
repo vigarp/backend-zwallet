@@ -294,7 +294,7 @@ describe('Users API', () => {
     /**
      * Test the DELETE route
      */
-    const idUserDeleted = 535
+    const idUserDeleted = 979
      describe("DELETE /users/:id", () => {
         it("It should NOT DELETE a user by wrong role token", (done) => {
             chai.request(server)

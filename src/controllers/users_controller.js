@@ -41,7 +41,6 @@ const addUser = async (req, res, next) => {
             handleResponse.response(res, resultUser, 201, 'user successfully registered');
         }
     } catch (error) {
-        console.log(error)
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -79,7 +78,6 @@ const loginUser = async (req, res, next) => {
             handleResponse.response(res, result, 200, 'successfully login');
         }
     } catch (error) {
-        console.log(error);
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -98,7 +96,6 @@ const detailUser = async (req, res, next) => {
             handleResponse.response(res, resultUser, 200, 'successfully fetched from server');
         }
     } catch (error) {
-        console.log(error);
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -135,7 +132,6 @@ const editUser = async (req, res, next) => {
             handleResponse.response(res, dataUser, 200, 'successfully edited');
         }
     } catch (error) {
-        console.log(error)
         next(createError(500, new createError.InternalServerError()));
     }
 }
