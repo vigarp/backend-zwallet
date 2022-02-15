@@ -2,6 +2,9 @@
 const urlNotFound = (req, res, next) => {
     res.status(404);
     res.json({
+        status: 'Failed',
+        code: 404,
+        data: null,
         message: 'URL Not Found'
     });
 };
