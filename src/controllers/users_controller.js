@@ -12,23 +12,19 @@ const addUser = async (req, res, next) => {
     try {
         const randomId = Math.floor(Math.random() * 999);
         const randomIdWallet = 'W-' + Math.floor(Math.random() * 999);
-        const { username, email, password, phone } = req.body;
+        const { username, email, password } = req.body;
         const emailRegistered = await usersModel.findUser('email', email);
-        const phoneRegistered = await usersModel.findUser('phone', phone);
-        if (username === undefined || email === undefined || password === undefined || phone === undefined || username === '' || email === '' || password === '') {
+        if (username === undefined || email === undefined || password === undefined || username === '' || email === '' || password === '') {
             return next(createError(403, 'registration failed, please check the input'));
         } else if (emailRegistered.length > 0) {
             return next(createError(403, 'email already registered'));
-        } else if (phoneRegistered.length > 0) {
-            return next(createError(403, 'phone already registered'));
         } else {
             const passwordHash = await bcrypt.hash(password, 10);
             const dataUSer = {
                 id: randomId,
                 username: username,
                 email: email,
-                password: passwordHash,
-                phone: phone
+                password: passwordHash
             };
             await usersModel.addUser(dataUSer);
             await walletsModel.addWallet(randomIdWallet, dataUSer.id);
@@ -49,7 +45,7 @@ const loginUser = async (req, res, next) => {
     try {
         const { email, password } = req.body;
         const [userRegistered] = await usersModel.findUser('email', email);
-        if (email === undefined || password === undefined || email === '' || password === '' ) {
+        if (email === undefined || password === undefined || email === '' || password === '') {
             return next(createError(403, 'login failed, please check the input'));
         } else if (!userRegistered) {
             return next(createError(403, 'email/password wrong'))
@@ -113,13 +109,13 @@ const getAllUser = async (req, res, next) => {
 const editUser = async (req, res, next) => {
     try {
         const idUser = req.params.id;
-        const {username, email, password, phone, picture} = req.body;
+        const { username, email, password, phone, picture } = req.body;
         const passwordHash = await bcrypt.hash(password, 10);
         const [userRegistered] = await usersModel.findUser('id', idUser);
         if (userRegistered === undefined) {
             handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
         } else if (username === undefined || email === undefined || password === undefined || phone === undefined || picture === undefined || username === '' || email === '' || password === '' || phone === '' || picture === '') {
-            return next(createError(403, 'edit failed, please check the input'));   
+            return next(createError(403, 'edit failed, please check the input'));
         } else {
             const dataUser = {
                 username,
