@@ -18,6 +18,7 @@ route
 
     .post('/:id/topup', protect, walletsController.topUpWallet)
     .get('/:id/history', protect, transactionsController.showHistory)
+    .post('/:id/transfer', protect, transactionsController.createTransfer)
 
 
 

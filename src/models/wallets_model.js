@@ -28,6 +28,19 @@ const seeWallet = (idUser) => {
     })
 }
 
+// create models for grab balance user wallet
+const grabBalanceWallet = (idUser) => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT * FROM wallets WHERE id_user = ?', idUser, (error, result) => {
+            if (!error) {
+                resolve(result)
+            } else {
+                reject(error)
+            };
+        });
+    });
+};
+
 // create models for top-up wallet user
 const topUpWallet = (idUser, amount) => {
     return new Promise((resolve, reject) => {
@@ -41,9 +54,25 @@ const topUpWallet = (idUser, amount) => {
         })
     })
 }
+
+// create model for subtract wallet user
+const substractWallet = (idUser, amount) => {
+    return new Promise((resolve, reject) => {
+        connection.query('UPDATE wallets SET balance = balance - ? WHERE id_user = ?', [amount, idUser], (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                reject(error)
+            };
+        });
+    });
+};
+
 // export modules to controllers
 module.exports = {
     addWallet,
     seeWallet,
-    topUpWallet
+    grabBalanceWallet,
+    topUpWallet,
+    substractWallet
 }

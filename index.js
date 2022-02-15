@@ -14,7 +14,7 @@ const usersController = require('./src/controllers/users_controller');
 // using app method
 app.use(cors());
 app.use(express.json());
-// app.use(morgan('dev'));
+app.use(morgan('dev'));
 
 app.use('/users', userRoutes)
 app.post('/register', usersController.addUser);
