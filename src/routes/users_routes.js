@@ -15,7 +15,7 @@ route
     .get('/:id', protect, usersController.detailUser)
     .put('/:id', protect, usersController.editUser)
     .delete('/:id', protect, isAdmin, usersController.deleteUser)
-
+    
     .post('/:id/topup', protect, walletsController.topUpWallet)
     .get('/:id/history', protect, transactionsController.showHistory)
 
