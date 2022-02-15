@@ -26,6 +26,7 @@ const topUpWallet = async (req, res, next) => {
         const [walletRegistered] = await walletsModel.seeWallet(id_user)
         const resultInvoice = {
             inv: dataTransfer.invoice,
+            id: dataTransfer.id_sender,
             type: dataTransfer.type,
             amount: dataTransfer.amount,
             date: dataTransfer.created_at,
