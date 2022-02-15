@@ -8,17 +8,17 @@ const app = express();
 
 const handleURL = require('./src/helpers/common')
 const handleResponse = require('./src/helpers/common')
-const userRoutes = require('./src/routes/users_routes');
-const usersController = require('./src/controllers/users_controller');
+const route = require('./src/routes')
 
 // using app method
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.use('/users', userRoutes)
-app.post('/register', usersController.addUser);
-app.post('/login', usersController.loginUser);
+// routes
+app.use('/v1', route)
+
+
 
 app.use(handleURL.urlNotFound);
 app.use((err, req, res, next) => {
