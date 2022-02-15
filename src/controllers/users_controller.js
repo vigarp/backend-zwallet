@@ -41,7 +41,6 @@ const addUser = async (req, res, next) => {
             handleResponse.response(res, resultUser, 201, 'user successfully registered');
         }
     } catch (error) {
-        console.log(error)
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -79,7 +78,6 @@ const loginUser = async (req, res, next) => {
             handleResponse.response(res, result, 200, 'successfully login');
         }
     } catch (error) {
-        console.log(error);
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -98,7 +96,6 @@ const detailUser = async (req, res, next) => {
             handleResponse.response(res, resultUser, 200, 'successfully fetched from server');
         }
     } catch (error) {
-        console.log(error);
         next(createError(500, new createError.InternalServerError()));
     }
 }
@@ -118,15 +115,22 @@ const editUser = async (req, res, next) => {
         const idUser = req.params.id;
         const {username, email, password, phone, picture} = req.body;
         const passwordHash = await bcrypt.hash(password, 10);
-        const dataUser = {
-            username,
-            email,
-            password: passwordHash,
-            phone,
-            picture
-        };
-        await usersModel.editUser(dataUser, idUser);
-        handleResponse.response(res, dataUser, 200, 'successfully edited')
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else if (username === undefined || email === undefined || password === undefined || phone === undefined || picture === undefined || username === '' || email === '' || password === '' || phone === '' || picture === '') {
+            return next(createError(403, 'edit failed, please check the input'));   
+        } else {
+            const dataUser = {
+                username,
+                email,
+                password: passwordHash,
+                phone,
+                picture
+            };
+            await usersModel.editUser(dataUser, idUser);
+            handleResponse.response(res, dataUser, 200, 'successfully edited');
+        }
     } catch (error) {
         next(createError(500, new createError.InternalServerError()));
     }
