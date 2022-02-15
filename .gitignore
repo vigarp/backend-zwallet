@@ -2,4 +2,3 @@ node_modules
 .env
 .eslintrc.js
 database.sql
-package-lock.json
