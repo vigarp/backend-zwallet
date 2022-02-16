@@ -61,7 +61,7 @@ const createTransfer = async (req, res, next) => {
                 balance: grabSenderBalance.balance - amount,
                 notes: dataTransfer.notes
             };
-            handleResponse.response(res, [resultTransfer], 200, `Successfully Transfered to ${dataTransfer.id_receiver}`)
+            handleResponse.response(res, [resultTransfer], 200, `Successfully Transfered`)
         }
     } catch (error) {
         
