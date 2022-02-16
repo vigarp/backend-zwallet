@@ -105,7 +105,21 @@ const detailUser = async (req, res, next) => {
 // create controller for read all user 
 const getAllUser = async (req, res, next) => {
     try {
-        const resultUsers = await usersModel.getAllUser();
+        const searchQuery = req.query.name || '%%';
+        const sortQuery = req.query.sort || 'username';
+        const orderQuery = req.query.order || 'asc';
+        const pageQuery = parseInt(req.query.page) || 1;
+        const limitQuery = parseInt(req.query.limit) || 5;
+        const offsetQuery = (pageQuery - 1) * limitQuery;
+
+
+        const resultUsers = await usersModel.getAllUser({
+            searchQuery,
+            sortQuery,
+            orderQuery,
+            offsetQuery,
+            limitQuery
+        });
         handleResponse.response(res, resultUsers, 200, 'successfully fetched from server');
     } catch (error) {
 

@@ -42,9 +42,9 @@ const detailUser = (idUser) => {
 }
 
 // create model for get all user
-const getAllUser = () => {
+const getAllUser = ({searchQuery, sortQuery, orderQuery, limitQuery, offsetQuery}) => {
     return new Promise((resolve, reject) => {
-        connection.query(`SELECT id, username, email, picture, phone FROM users;`, (error, result) => {
+        connection.query(`SELECT id, username, email, picture, phone FROM users WHERE username LIKE '%${searchQuery}%' ORDER BY ${sortQuery} ${orderQuery} LIMIT ${limitQuery} OFFSET ${offsetQuery};`, (error, result) => {
             if (!error) {
                 resolve(result);
             } else {
