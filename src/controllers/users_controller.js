@@ -54,22 +54,26 @@ const loginUser = async (req, res, next) => {
             if (!resultHash) return next(createError(403, 'email/password wrong'));
             const secretKey = process.env.SECRET_KEY_JWT;
             const payload = {
-                email: userRegistered.email,
+                id: userRegistered.id,
                 username: userRegistered.username,
+                email: userRegistered.email,
+                phone: userRegistered.phone,
                 role: userRegistered.role,
-                picture: userRegistered.picture,
-                phone: userRegistered.phone
+                verified: userRegistered.verified,
+                picture: userRegistered.picture
             };
             const verifyOptions = {
                 expiresIn: '1 days'
             };
             const token = jwt.sign(payload, secretKey, verifyOptions);
-            const { id, username, email, phone, picture } = userRegistered;
+            const { id, username, email, phone, role, verified, picture } = userRegistered;
             const result = {
                 id,
                 username,
                 email,
                 phone,
+                role,
+                verified,
                 picture,
                 token: token
             };
