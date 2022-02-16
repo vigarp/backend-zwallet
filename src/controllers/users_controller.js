@@ -57,7 +57,8 @@ const loginUser = async (req, res, next) => {
                 email: userRegistered.email,
                 username: userRegistered.username,
                 role: userRegistered.role,
-                picture: userRegistered.picture
+                picture: userRegistered.picture,
+                phone: userRegistered.phone
             };
             const verifyOptions = {
                 expiresIn: '1 days'
