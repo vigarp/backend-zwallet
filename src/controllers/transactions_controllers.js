@@ -9,11 +9,13 @@ const handleResponse = require('../helpers/common');
 const showHistory = async (req, res, next) => {
     try {
         const idUser = req.params.id;
+        const orderQuery = req.query.order || 'DESC';
+        const limitQuery = req.query.limit || 4;
         const resultUser = await usersModel.findUser('id',idUser)
         if (resultUser.length === 0) {
             return next(createError(403, `id ${idUser} not found`))
         } else {
-            const resultHistory = await transactionsModel.showHistory(idUser);
+            const resultHistory = await transactionsModel.showHistory(idUser, orderQuery, limitQuery);
             if (resultHistory.length === 0) {
                 handleResponse.response(res, resultHistory, 200, `id ${idUser} transactions history empty`)
             } else {

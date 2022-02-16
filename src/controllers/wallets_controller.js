@@ -20,6 +20,7 @@ const topUpWallet = async (req, res, next) => {
             id_receiver: null,
             type: 'Topup',
             amount: amount,
+            notes: `Topup with Rp. ${amount}`,
             created_at: new Date()
         };
         await transactionsModel.createTransfer(dataTransfer);
@@ -29,6 +30,7 @@ const topUpWallet = async (req, res, next) => {
             id: dataTransfer.id_sender,
             type: dataTransfer.type,
             amount: dataTransfer.amount,
+            notes: dataTransfer.notes,
             date: dataTransfer.created_at,
             balance: walletRegistered.balance
         }
