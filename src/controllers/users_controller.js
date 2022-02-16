@@ -56,7 +56,8 @@ const loginUser = async (req, res, next) => {
             const payload = {
                 email: userRegistered.email,
                 username: userRegistered.username,
-                role: userRegistered.role
+                role: userRegistered.role,
+                picture: userRegistered.picture
             };
             const verifyOptions = {
                 expiresIn: '1 days'
