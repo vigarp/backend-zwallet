@@ -151,6 +151,28 @@ const editUser = async (req, res, next) => {
         next(createError(500, new createError.InternalServerError()));
     }
 }
+// create controller for edit pic user
+const editPicUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        const {picture} = req.body;
+        
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else if (picture === undefined ||  picture === '') {
+            return next(createError(403, 'edit picture failed, please check the input'));
+        } else {
+            const dataPic = {
+                picture
+            }
+            await usersModel.editUser(dataPic, idUser);
+            handleResponse.response(res, picture, 200, 'successfully edited');
+        }
+    } catch (error) {
+        next(createError(500, new createError.InternalServerError()));
+    }
+}
 //create controller for delete user
 const deleteUser = async (req, res, next) => {
     try {
@@ -173,5 +195,6 @@ module.exports = {
     detailUser,
     getAllUser,
     editUser,
+    editPicUser,
     deleteUser
 }

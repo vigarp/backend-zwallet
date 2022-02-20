@@ -14,6 +14,7 @@ route
     .get('/', protect, usersController.getAllUser)
     .get('/:id', protect, usersController.detailUser)
     .put('/:id', protect, usersController.editUser)
+    .put('/:id/picture', protect, usersController.editPicUser)
     .delete('/:id', protect, isAdmin, usersController.deleteUser)
     
     .post('/:id/topup', protect, walletsController.topUpWallet)

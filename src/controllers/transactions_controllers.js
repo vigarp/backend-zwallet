@@ -64,7 +64,7 @@ const createTransfer = async (req, res, next) => {
             handleResponse.response(res, [resultTransfer], 200, `Successfully Transfered`)
         }
     } catch (error) {
-        
+        next(createError(500, new createError.InternalServerError())); 
     }
 }
 module.exports = {
