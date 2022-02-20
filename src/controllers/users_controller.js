@@ -155,21 +155,21 @@ const editUser = async (req, res, next) => {
 const editPicUser = async (req, res, next) => {
     try {
         const idUser = req.params.id;
-        const {picture} = req.body;
-        
+        // const {picture} = req.body;
+        const fileName = req.file.filename;
+
         const [userRegistered] = await usersModel.findUser('id', idUser);
         if (userRegistered === undefined) {
             handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
-        } else if (picture === undefined ||  picture === '') {
-            return next(createError(403, 'edit picture failed, please check the input'));
         } else {
             const dataPic = {
-                picture
+                picture: `${process.env.BASE_URL}/file/${fileName}`
             }
             await usersModel.editUser(dataPic, idUser);
-            handleResponse.response(res, picture, 200, 'successfully edited');
+            handleResponse.response(res, dataPic, 200, 'successfully edited');
         }
     } catch (error) {
+        console.log(error)
         next(createError(500, new createError.InternalServerError()));
     }
 }

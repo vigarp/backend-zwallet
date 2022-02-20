@@ -19,6 +19,7 @@ app.use(morgan('dev'));
 // app.use((bodyParser.urlencoded({extended: false, limit: '2gb'})));
 // routes
 app.use('/v1', route)
+app.use('/file', express.static('./uploads'));
 
 
 
