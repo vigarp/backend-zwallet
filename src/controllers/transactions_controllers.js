@@ -51,9 +51,9 @@ const createTransfer = async (req, res, next) => {
         if (grabSenderBalance.balance < amount) {
             handleResponse.response(res, null, 403, 'Current Balance Not Enough, Please Topup')
         } else {
+            await transactionsModel.createTransfer(dataTransfer);
             await walletsModel.substractWallet(idUser, amount);
             await walletsModel.topUpWallet(idReceiver, amount);
-            await transactionsModel.createTransfer(dataTransfer);
 
             const resultTransfer = {
                 invoice: dataTransfer.invoice,
