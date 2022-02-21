@@ -168,7 +168,28 @@ const editPicUser = async (req, res, next) => {
                 picture: `${process.env.BASE_URL}/file/${fileName}`
             }
             await usersModel.editUser(dataPic, idUser);
-            handleResponse.response(res, dataPic, 200, 'successfully edited');
+            handleResponse.response(res, dataPic, 200, 'picture successfully edited');
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()));
+    }
+}
+// create controller for edit phone user
+const editPhoneUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        const {phone} = req.body;
+
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const dataPhone = {
+                phone
+            }
+            await usersModel.editUser(dataPhone, idUser);
+            handleResponse.response(res, dataPhone, 200, 'phone sucessfully edited');
         }
     } catch (error) {
         console.log(error)
@@ -198,5 +219,6 @@ module.exports = {
     getAllUser,
     editUser,
     editPicUser,
+    editPhoneUser,
     deleteUser
 }
