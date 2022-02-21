@@ -13,6 +13,7 @@ const addUser = async (req, res, next) => {
         const randomId = Math.floor(Math.random() * 999);
         const randomIdWallet = 'W-' + Math.floor(Math.random() * 999);
         const { username, email, password } = req.body;
+        const defaultPic = 'https://thebenclark.files.wordpress.com/2014/03/facebook-default-no-profile-pic.jpg';
         const emailRegistered = await usersModel.findUser('email', email);
         if (username === undefined || email === undefined || password === undefined || username === '' || email === '' || password === '') {
             return next(createError(403, 'registration failed, please check the input'));
@@ -24,7 +25,8 @@ const addUser = async (req, res, next) => {
                 id: randomId,
                 username: username,
                 email: email,
-                password: passwordHash
+                password: passwordHash,
+                picture: defaultPic
             };
             await usersModel.addUser(dataUSer);
             await walletsModel.addWallet(randomIdWallet, dataUSer.id);
