@@ -5,10 +5,30 @@ const morgan = require('morgan');
 const PORT = process.env.PORT || 4001;
 const cors = require('cors');
 const app = express();
+const http = require('http');
+const server = http.createServer(app);
 
 const handleURL = require('./src/helpers/common')
 const handleResponse = require('./src/helpers/common')
 const route = require('./src/routes')
+
+// import modules from socket.io
+const {Server} = require('socket.io');
+
+const io = new Server({
+    cors: {
+        origin: 'http://localhost:3000'
+    }
+});
+
+io.on("connection", (socket) => {
+    console.log('some user ONLINE')
+    socket.on('disconnect', ()=> {
+        console.log('some user OFFLINE')
+    })
+})
+
+io.listen(server);
 
 // using app method
 app.use(cors());
@@ -31,7 +51,7 @@ app.use((err, req, res, next) => {
     console.log(err);
 })
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`server starting on port ${PORT}`);
 });
 
