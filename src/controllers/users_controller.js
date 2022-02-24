@@ -153,6 +153,33 @@ const editUser = async (req, res, next) => {
         next(createError(500, new createError.InternalServerError()));
     }
 }
+// create controller for edit password user
+const editPassUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        const { oldPassword } = req.body;
+        const { newPassword } = req.body;
+
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (oldPassword === undefined || newPassword === undefined || oldPassword === '' || newPassword === '') {
+            return next(createError(403, 'login failed, please check the input'));
+        } else if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const resultHash = await bcrypt.compare(oldPassword, userRegistered.password);
+            if (!resultHash) return next(createError(403, 'old password not match'))
+            const passwordHash = await bcrypt.hash(newPassword, 10);
+            const dataPassword = {
+                password: passwordHash
+            }
+            await usersModel.editUser(dataPassword, idUser);
+            handleResponse.response(res, true, 200, 'successfully password changed');
+        } 
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()));
+    }
+}
 // create controller for edit pic user
 const editPicUser = async (req, res, next) => {
     try {
@@ -179,7 +206,7 @@ const editPicUser = async (req, res, next) => {
 const editPhoneUser = async (req, res, next) => {
     try {
         const idUser = req.params.id;
-        const {phone} = req.body;
+        const { phone } = req.body;
 
         const [userRegistered] = await usersModel.findUser('id', idUser);
         if (userRegistered === undefined) {
@@ -220,5 +247,6 @@ module.exports = {
     editUser,
     editPicUser,
     editPhoneUser,
+    editPassUser,
     deleteUser
 }
