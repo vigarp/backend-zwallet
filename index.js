@@ -26,6 +26,11 @@ io.on("connection", (socket) => {
     socket.on('disconnect', ()=> {
         console.log('some user OFFLINE')
     })
+    socket.emit('message for new user', 'halo selamat datang, ini promo buat kamooh')
+    socket.on('sendTip', (data) => {
+        console.log(data)
+        socket.emit('sendTip', data)
+    })
 })
 
 io.listen(server);
