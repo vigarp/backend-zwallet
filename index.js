@@ -26,8 +26,7 @@ io.on("connection", (socket) => {
     socket.on('disconnect', ()=> {
         console.log('some user OFFLINE')
     })
-    socket.emit('message for new user', 'halo selamat datang, ini promo buat kamooh')
-    socket.on('sendTip', (data) => {
+    socket.on('sendInfo', (data) => {
         console.log(data)
         socket.broadcast.emit('sendTip', data)
     })
