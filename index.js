@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
     socket.emit('message for new user', 'halo selamat datang, ini promo buat kamooh')
     socket.on('sendTip', (data) => {
         console.log(data)
-        socket.emit('sendTip', data)
+        socket.broadcast.emit('sendTip', data)
     })
 })
 
