@@ -17,6 +17,7 @@ route
     .put('/:id', protect, usersController.editUser)
     .put('/:id/picture', protect, upload.single('picture'), usersController.editPicUser)
     .put('/:id/phone', protect, usersController.editPhoneUser)
+    .delete('/:id/phone', protect, usersController.deletePhoneUser)
     .put('/:id/password', protect, usersController.editPassUser)
     .delete('/:id', protect, isAdmin, usersController.deleteUser)
     

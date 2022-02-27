@@ -216,11 +216,30 @@ const editPhoneUser = async (req, res, next) => {
                 phone
             }
             await usersModel.editUser(dataPhone, idUser);
-            handleResponse.response(res, dataPhone, 200, 'phone sucessfully edited');
+            handleResponse.response(res, dataPhone, 200, 'phone sucessfully added');
         }
     } catch (error) {
         console.log(error)
         next(createError(500, new createError.InternalServerError()));
+    }
+}
+// cretae controller for delete phone user
+const deletePhoneUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const dataPhone = {
+                phone: null
+            }
+            await usersModel.editUser(dataPhone, idUser);
+            handleResponse.response(res, dataPhone, 200, 'phone sucessfully deleted');
+        }
+    } catch (error) {
+        
     }
 }
 //create controller for delete user
@@ -238,6 +257,7 @@ const deleteUser = async (req, res, next) => {
         next(createError(500, new createError.InternalServerError()));
     }
 }
+
 // export modules to routes
 module.exports = {
     addUser,
@@ -248,5 +268,6 @@ module.exports = {
     editPicUser,
     editPhoneUser,
     editPassUser,
+    deletePhoneUser,
     deleteUser
 }
