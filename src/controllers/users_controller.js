@@ -174,7 +174,7 @@ const editPassUser = async (req, res, next) => {
             }
             await usersModel.editUser(dataPassword, idUser);
             handleResponse.response(res, true, 200, 'successfully password changed');
-        } 
+        }
     } catch (error) {
         console.log(error)
         next(createError(500, new createError.InternalServerError()));
