@@ -122,9 +122,16 @@ const getAllUser = async (req, res, next) => {
             offsetQuery,
             limitQuery
         });
-        handleResponse.response(res, resultUsers, 200, 'successfully fetched from server');
+        const [countUser] = await usersModel.countUser();
+        handleResponse.response(res, resultUsers, 200, {
+            currentPage: pageQuery,
+            limit: limitQuery,
+            totalData: countUser.total_users,
+            totalPage: Math.ceil(countUser.total_users / limitQuery),
+            message: 'data fetched from server'
+        });
     } catch (error) {
-
+        console.log(error)
     }
 }
 // create controller for edit user
