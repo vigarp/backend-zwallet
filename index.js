@@ -13,7 +13,7 @@ const handleResponse = require('./src/helpers/common')
 const route = require('./src/routes')
 
 // import modules from socket.io
-const {Server} = require('socket.io');
+const { Server } = require('socket.io');
 
 const io = new Server({
     cors: {
@@ -22,13 +22,24 @@ const io = new Server({
 });
 
 io.on("connection", (socket) => {
+    socket.on('user online', (idUser) => {
+        socket.join(idUser)
+        console.log(idUser)
+    })
+
     console.log('some user ONLINE')
-    socket.on('disconnect', ()=> {
+    socket.on('disconnect', () => {
         console.log('some user OFFLINE')
     })
+
+    socket.on('sendTransaction', (data) => {
+        console.log(data)
+        socket.to(parseInt(data.receiver)).emit('sendTransaction', data)
+    })
+
     socket.on('sendInfo', (data) => {
         console.log(data)
-        socket.broadcast.emit('sendTip', data)
+        socket.broadcast.emit('sendInfo', data)
     })
 })
 
