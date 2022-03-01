@@ -11,19 +11,35 @@ const showHistory = async (req, res, next) => {
         const idUser = req.params.id;
         const orderQuery = req.query.order || 'DESC';
         const limitQuery = req.query.limit || 4;
-        const resultUser = await usersModel.findUser('id',idUser)
+        const pageQuery = parseInt(req.query.page) || 1;
+        const offsetQuery = (pageQuery - 1) * limitQuery;
+
+        const resultUser = await usersModel.findUser('id', idUser)
         if (resultUser.length === 0) {
             return next(createError(403, `id ${idUser} not found`))
         } else {
-            const resultHistory = await transactionsModel.showHistory(idUser, orderQuery, limitQuery);
+            const resultHistory = await transactionsModel.showHistory(
+                {
+                    idUser,
+                    orderQuery,
+                    limitQuery,
+                    offsetQuery
+                });
+            // const [countTransaction] = await transactionsModel.countTransaction();
             if (resultHistory.length === 0) {
                 handleResponse.response(res, resultHistory, 200, `id ${idUser} transactions history empty`)
             } else {
-                handleResponse.response(res, resultHistory, 200, 'successfullt fethced from server')
+                handleResponse.response(res, resultHistory, 200, {
+                    currentPage: pageQuery,
+                    limit: limitQuery,
+                    totalData: null,
+                    totalPage: null,
+                    message: 'data fetched from server'
+                });
             }
         }
     } catch (error) {
-       next(createError(500, new createError.InternalServerError())); 
+        next(createError(500, new createError.InternalServerError()));
     }
 }
 
@@ -64,7 +80,7 @@ const createTransfer = async (req, res, next) => {
             handleResponse.response(res, [resultTransfer], 200, `Successfully Transfered`)
         }
     } catch (error) {
-        next(createError(500, new createError.InternalServerError())); 
+        next(createError(500, new createError.InternalServerError()));
     }
 }
 module.exports = {
