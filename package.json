@@ -1,40 +1,31 @@
 {
-  "name": "backend-zwallet",
+  "name": "zwallet-backend",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vigarp/backend-zwallet.git"
+    "url": "git+https://github.com/vigarp/zwallet-backend.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/vigarp/backend-zwallet/issues"
+    "url": "https://github.com/vigarp/zwallet-backend/issues"
   },
-  "homepage": "https://github.com/vigarp/backend-zwallet#readme",
+  "homepage": "https://github.com/vigarp/zwallet-backend#readme",
   "dependencies": {
-    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
-    "dotenv": "^14.3.2",
-    "express": "^4.17.2",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
     "http-errors": "^2.0.0",
     "joi": "^17.6.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql2": "^2.3.3",
-    "redis": "^4.0.2"
-  },
-  "devDependencies": {
-    "eslint": "^8.7.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-n": "^14.0.0",
-    "eslint-plugin-promise": "^5.2.0"
+    "redis": "^4.0.4"
   }
 }
