@@ -13,12 +13,12 @@ const addUser = async (req, res, next) => {
         const randomId = Math.floor(Math.random() * 999);
         const randomIdWallet = 'W-' + Math.floor(Math.random() * 999);
         const { username, email, password } = req.body;
-        const defaultPic = 'https://thebenclark.files.wordpress.com/2014/03/facebook-default-no-profile-pic.jpg';
+        const defaultPic = 'http://localhost:4001/file/default-pic.jpeg';
         const emailRegistered = await usersModel.findUser('email', email);
         if (username === undefined || email === undefined || password === undefined || username === '' || email === '' || password === '') {
             return next(createError(403, 'registration failed, please check the input'));
         } else if (emailRegistered.length > 0) {
-            return next(createError(403, 'email already registered'));
+            return next(createError(403, 'Email Already Registered'));
         } else {
             const passwordHash = await bcrypt.hash(password, 10);
             const dataUSer = {
@@ -50,10 +50,10 @@ const loginUser = async (req, res, next) => {
         if (email === undefined || password === undefined || email === '' || password === '') {
             return next(createError(403, 'login failed, please check the input'));
         } else if (!userRegistered) {
-            return next(createError(403, 'email/password wrong'))
+            return next(createError(403, 'Email or Password Wrong'))
         } else {
             const resultHash = await bcrypt.compare(password, userRegistered.password)
-            if (!resultHash) return next(createError(403, 'email/password wrong'));
+            if (!resultHash) return next(createError(403, 'Email or Password Invalid'));
             const secretKey = process.env.SECRET_KEY_JWT;
             const payload = {
                 id: userRegistered.id,
