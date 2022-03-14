@@ -1,6 +1,6 @@
 const createError = require('http-errors');
 const handleResponse = require('../helpers/common');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 // import modules from models
