@@ -82,6 +82,19 @@ const deleteUser = (idUser) => {
         })
     })
 }
+// create model for count users
+const countUser = () => {
+    return new Promise((resolve, reject) => {
+        connection.query('SELECT COUNT(*) AS total_users FROM users', (error, result) => {
+            if (!error) {
+                resolve(result);
+            } else {
+                console.log(error);
+                reject(error)
+            }
+        })
+    })
+}
 // export modules to controllers
 module.exports = {
     addUser,
@@ -89,5 +102,6 @@ module.exports = {
     detailUser,
     getAllUser,
     editUser,
-    deleteUser
+    deleteUser,
+    countUser
 }

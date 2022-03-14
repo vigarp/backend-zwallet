@@ -13,18 +13,20 @@ const addUser = async (req, res, next) => {
         const randomId = Math.floor(Math.random() * 999);
         const randomIdWallet = 'W-' + Math.floor(Math.random() * 999);
         const { username, email, password } = req.body;
+        const defaultPic = 'http://localhost:4001/file/default-pic.jpeg';
         const emailRegistered = await usersModel.findUser('email', email);
         if (username === undefined || email === undefined || password === undefined || username === '' || email === '' || password === '') {
             return next(createError(403, 'registration failed, please check the input'));
         } else if (emailRegistered.length > 0) {
-            return next(createError(403, 'email already registered'));
+            return next(createError(403, 'Email Already Registered'));
         } else {
             const passwordHash = await bcrypt.hash(password, 10);
             const dataUSer = {
                 id: randomId,
                 username: username,
                 email: email,
-                password: passwordHash
+                password: passwordHash,
+                picture: defaultPic
             };
             await usersModel.addUser(dataUSer);
             await walletsModel.addWallet(randomIdWallet, dataUSer.id);
@@ -48,10 +50,10 @@ const loginUser = async (req, res, next) => {
         if (email === undefined || password === undefined || email === '' || password === '') {
             return next(createError(403, 'login failed, please check the input'));
         } else if (!userRegistered) {
-            return next(createError(403, 'email/password wrong'))
+            return next(createError(403, 'Email or Password Wrong'))
         } else {
             const resultHash = await bcrypt.compare(password, userRegistered.password)
-            if (!resultHash) return next(createError(403, 'email/password wrong'));
+            if (!resultHash) return next(createError(403, 'Email or Password Invalid'));
             const secretKey = process.env.SECRET_KEY_JWT;
             const payload = {
                 id: userRegistered.id,
@@ -120,9 +122,16 @@ const getAllUser = async (req, res, next) => {
             offsetQuery,
             limitQuery
         });
-        handleResponse.response(res, resultUsers, 200, 'successfully fetched from server');
+        const [countUser] = await usersModel.countUser();
+        handleResponse.response(res, resultUsers, 200, {
+            currentPage: pageQuery,
+            limit: limitQuery,
+            totalData: countUser.total_users,
+            totalPage: Math.ceil(countUser.total_users / limitQuery),
+            message: 'data fetched from server'
+        });
     } catch (error) {
-
+        console.log(error)
     }
 }
 // create controller for edit user
@@ -151,6 +160,95 @@ const editUser = async (req, res, next) => {
         next(createError(500, new createError.InternalServerError()));
     }
 }
+// create controller for edit password user
+const editPassUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        const { oldPassword } = req.body;
+        const { newPassword } = req.body;
+
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (oldPassword === undefined || newPassword === undefined || oldPassword === '' || newPassword === '') {
+            return next(createError(403, 'login failed, please check the input'));
+        } else if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const resultHash = await bcrypt.compare(oldPassword, userRegistered.password);
+            if (!resultHash) return next(createError(403, 'old password not match'))
+            const passwordHash = await bcrypt.hash(newPassword, 10);
+            const dataPassword = {
+                password: passwordHash
+            }
+            await usersModel.editUser(dataPassword, idUser);
+            handleResponse.response(res, true, 200, 'successfully password changed');
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()));
+    }
+}
+// create controller for edit pic user
+const editPicUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        // const {picture} = req.body;
+        const fileName = req.file.filename;
+
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const dataPic = {
+                picture: `${process.env.BASE_URL}/file/${fileName}`
+            }
+            await usersModel.editUser(dataPic, idUser);
+            handleResponse.response(res, dataPic, 200, 'picture successfully edited');
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()));
+    }
+}
+// create controller for edit phone user
+const editPhoneUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        const { phone } = req.body;
+
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const dataPhone = {
+                phone
+            }
+            await usersModel.editUser(dataPhone, idUser);
+            handleResponse.response(res, dataPhone, 200, 'phone sucessfully added');
+        }
+    } catch (error) {
+        console.log(error)
+        next(createError(500, new createError.InternalServerError()));
+    }
+}
+// cretae controller for delete phone user
+const deletePhoneUser = async (req, res, next) => {
+    try {
+        const idUser = req.params.id;
+        
+        const [userRegistered] = await usersModel.findUser('id', idUser);
+        if (userRegistered === undefined) {
+            handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
+        } else {
+            const dataPhone = {
+                phone: null
+            }
+            await usersModel.editUser(dataPhone, idUser);
+            handleResponse.response(res, dataPhone, 200, 'phone sucessfully deleted');
+        }
+    } catch (error) {
+        
+    }
+}
 //create controller for delete user
 const deleteUser = async (req, res, next) => {
     try {
@@ -166,6 +264,7 @@ const deleteUser = async (req, res, next) => {
         next(createError(500, new createError.InternalServerError()));
     }
 }
+
 // export modules to routes
 module.exports = {
     addUser,
@@ -173,5 +272,9 @@ module.exports = {
     detailUser,
     getAllUser,
     editUser,
+    editPicUser,
+    editPhoneUser,
+    editPassUser,
+    deletePhoneUser,
     deleteUser
 }
