@@ -191,15 +191,15 @@ const editPassUser = async (req, res, next) => {
 const editPicUser = async (req, res, next) => {
     try {
         const idUser = req.params.id;
-        // const {picture} = req.body;
-        const fileName = req.file.filename;
+        const {picture} = req.body;
+        // const fileName = req.file.filename;
 
         const [userRegistered] = await usersModel.findUser('id', idUser);
         if (userRegistered === undefined) {
             handleResponse.response(res, null, 404, `user not registered with id: ${idUser}`);
         } else {
             const dataPic = {
-                picture: `${process.env.BASE_URL}/file/${fileName}`
+                picture
             }
             await usersModel.editUser(dataPic, idUser);
             handleResponse.response(res, dataPic, 200, 'picture successfully edited');
