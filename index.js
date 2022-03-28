@@ -17,7 +17,7 @@ const { Server } = require('socket.io');
 
 const io = new Server({
     cors: {
-        origin: 'http://localhost:3000'
+        origin: `${process.env.REACT_APP_URL_FRONTEND}`
     }
 });
 
