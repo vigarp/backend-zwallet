@@ -56,7 +56,9 @@ app.use(morgan('dev'));
 app.use('/v1', route)
 app.use('/file', express.static('./uploads'));
 
-
+app.get('/', (req, res) => {
+    res.send('mau apa kamu? :)')
+})
 
 app.use(handleURL.urlNotFound);
 app.use((err, req, res, next) => {
