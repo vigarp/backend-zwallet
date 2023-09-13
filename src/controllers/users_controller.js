@@ -105,7 +105,7 @@ const detailUser = async (req, res, next) => {
 }
 
 // create controller for read all user 
-const getAllUser = async (req, res, next) => {
+const getAllUser = async (req, res) => {
     try {
         const searchQuery = req.query.name || '%%';
         const sortQuery = req.query.sort || 'username';
@@ -231,7 +231,7 @@ const editPhoneUser = async (req, res, next) => {
     }
 }
 // cretae controller for delete phone user
-const deletePhoneUser = async (req, res, next) => {
+const deletePhoneUser = async (req, res) => {
     try {
         const idUser = req.params.id;
         
@@ -246,7 +246,7 @@ const deletePhoneUser = async (req, res, next) => {
             handleResponse.response(res, dataPhone, 200, 'phone sucessfully deleted');
         }
     } catch (error) {
-        
+        console.log(error);
     }
 }
 //create controller for delete user
